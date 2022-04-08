@@ -10,23 +10,23 @@ public class CellControllerFactory : ICellControllerFactory
     private List<ICellController> controllersList = new List<ICellController>();
     private IGridFactory gridFactory;
     private ICellModelFactory cellModelFactory;
-    public CellControllerFactory(IGridFactory gridFactory, ICellModelFactory cellModelFactory)
+    IGridModel gridModel;
+    public CellControllerFactory(IGridFactory gridFactory)
     {
         this.gridFactory = gridFactory;
-        this.cellModelFactory = cellModelFactory;
+        this.gridModel = gridFactory.GetGridModel();
     }
 
     public List<ICellController> GetControllers()
     {
         if(controllersList.Count == 0)
         {
-            var cellViews = gridFactory.GetGrid();
+            var cellViews = gridFactory.GetCellViews();
+            var cellModels = gridFactory.GetCellModels();
 
-            foreach(var cellView in cellViews)
+            for(int i = 0; i < gridModel.CellsTotal; i++)
             {
-                var model = cellModelFactory.GetModel();
-
-                var controller = new CellController(model, cellView);
+                var controller = new CellController(cellModels[i], cellViews[i]);
                 controllersList.Add(controller);
             }
         }

@@ -10,10 +10,10 @@ public class GridController : IGridController
 {
     private IGridModel gridModel;
     private IGridFactory gridFactory;
-    public GridController(IGridFactory gridFactory, IGridModel gridModel)
+    public GridController(IGridFactory gridFactory)
     {
         this.gridFactory = gridFactory;
-        this.gridModel = gridModel;
+        this.gridModel = gridFactory.GetGridModel();
 
         InitializeGrid();
     }
@@ -48,6 +48,6 @@ public class GridController : IGridController
             positionList.Add(position);
         }
 
-        gridFactory.InitializeGrid(positionList);
+        gridFactory.InitializeGridFactory(positionList);
     }
 }

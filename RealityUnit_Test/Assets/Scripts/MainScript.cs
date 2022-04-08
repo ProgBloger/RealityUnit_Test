@@ -6,24 +6,30 @@ public class MainScript : MonoBehaviour
 {
     void Awake()
     {
+        // TODO: Use DI for registration and resolving hierarchy
+
         ICellViewFactory viewFactory = new CellViewFactory();
+        ICellModelFactory modelFactory = new CellModelFactory();
+        IGridModelFactory gridModelFactory = new GridModelFactory();
 
         // GridFactory uses CellFactory to produce CellViews
-        IGridFactory gridFactory = new GridFactory(viewFactory);
-        IGridModelFactory gridModelFactory = new GridModelFactory();
-        IGridModel gridModel = gridModelFactory.GetGridModel();
+        IGridFactory gridFactory = new GridFactory(viewFactory, modelFactory, gridModelFactory);
         
         // GridController invokes the GridFactory with GridModel defined parameters
         // GridController extendable to hold logic for the grid dimension update
-        IGridController gridController = new GridController(gridFactory, gridModel);
+        IGridController gridController = new GridController(gridFactory);
 
         // CellControllerFactory includes GridFactory and creates CellControllers for
         // each created cell on the GridControllerStage
-        ICellModelFactory modelFactory = new CellModelFactory();
-        ICellControllerFactory controllerFactory = new CellControllerFactory(gridFactory, modelFactory);
+        ICellControllerFactory controllerFactory = new CellControllerFactory(gridFactory);
         var controllers = controllerFactory.GetControllers();
         
-        // ScoreController holds total score and win/loose logic
-        
+        // IScoreModelFactory scoreModelFactory = new ScoreModelFactory();
+        // IScoreModel scoreModel = scoreModelFactory.GetScoreModel();
+
+        // // ScoreController holds total score and win/loose logic
+        // IScoreControllerFactory scoreControllerFactory = new ScoreControllerFactory();
+        // IScoreController scoreController = scoreControllerFactory.GetScoreController(gridFactory, scoreView, scoreModel);
+          
     }
 }
