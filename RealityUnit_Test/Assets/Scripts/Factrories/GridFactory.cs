@@ -22,14 +22,12 @@ public class GridFactory : IGridFactory
         this.cellViewFactory = cellViewFactory;
         this.cellModelFactory = cellModelFactory;
         this.gridModelFactory = gridModelFactory;
+        
+        GetGridModel();
     }
 
     public void InitializeGridFactory(List<Vector3> positions)
     {
-        if(this.gridModel == null)
-        {
-            gridModel = gridModelFactory.GetGridModel();
-        }
 
         if(cellViews.Count == 0)
         {
@@ -42,8 +40,7 @@ public class GridFactory : IGridFactory
 
         if(cellModels.Count == 0)
         {
-            var cellsInGridCount = positions.Count;
-            for(int i = 0; i < cellsInGridCount; i++)
+            for(int i = 0; i < this.gridModel.CellsTotal; i++)
             {
                 var cellModel = cellModelFactory.GetModel();
                 cellModels.Add(cellModel);
@@ -63,6 +60,11 @@ public class GridFactory : IGridFactory
 
     public IGridModel GetGridModel()
     {
+        if(this.gridModel == null)
+        {
+            gridModel = gridModelFactory.GetGridModel();
+        }
+
         return this.gridModel;
     }
 }

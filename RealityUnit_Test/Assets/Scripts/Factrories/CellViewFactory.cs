@@ -12,6 +12,7 @@ public class CellViewFactory : ICellViewFactory
       var prefab = Resources.Load<GameObject>("Cell");
       var instance = UnityEngine.Object.Instantiate(prefab);
       var cellView = instance.GetComponent<ICellView>();
+
       cellView.SetPosition(position);
 
       return cellView;

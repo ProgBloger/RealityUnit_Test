@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class MainScript : MonoBehaviour
 {
-    void Awake()
+    void OnEnable()
     {
         // TODO: Use DI for registration and resolving hierarchy
 
@@ -24,12 +24,14 @@ public class MainScript : MonoBehaviour
         ICellControllerFactory controllerFactory = new CellControllerFactory(gridFactory);
         var controllers = controllerFactory.GetControllers();
         
-        // IScoreModelFactory scoreModelFactory = new ScoreModelFactory();
-        // IScoreModel scoreModel = scoreModelFactory.GetScoreModel();
+        IScoreModelFactory scoreModelFactory = new ScoreModelFactory();
+        IScoreModel scoreModel = scoreModelFactory.GetScoreModel();
 
-        // // ScoreController holds total score and win/loose logic
-        // IScoreControllerFactory scoreControllerFactory = new ScoreControllerFactory();
-        // IScoreController scoreController = scoreControllerFactory.GetScoreController(gridFactory, scoreView, scoreModel);
+        IScoreViewFactory scoreViewFactory = new ScoreViewFactory();
+        IScoreView scoreView = scoreViewFactory.GetScoreView();
+        // ScoreController holds total score and win/loose logic
+        IScoreControllerFactory scoreControllerFactory = new ScoreControllerFactory(gridFactory);
+        IScoreController scoreController = scoreControllerFactory.GetScoreController(scoreView, scoreModel);
           
     }
 }

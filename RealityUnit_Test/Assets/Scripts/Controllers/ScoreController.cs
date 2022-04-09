@@ -28,17 +28,23 @@ public class ScoreController : IScoreController
     public void SetScores()
     {
         var availableScores = scoreModel.PointsArray;
-        availableScores = Shuffle(availableScores);
+        var scoresList = new List<int>(availableScores);
+        while(scoresList.Count < gridModel.CellsTotal)
+        {
+            scoresList.AddRange(availableScores);
+        }
+
+        scoresList = Shuffle(scoresList);
 
         for(int i = 0; i < gridModel.CellsTotal; i++)
         {
-            cellModels[i].Value = availableScores[i];
+            cellModels[i].Value = scoresList[i];
         }
     }
 
-    private int[] Shuffle(int[] availableScores)
+    private List<int> Shuffle(List<int> availableScores)
     {
         Random rnd=new Random();
-        return availableScores.OrderBy(x => rnd.Next()).ToArray();  
+        return availableScores.OrderBy(x => rnd.Next()).ToList();  
     }
 }
