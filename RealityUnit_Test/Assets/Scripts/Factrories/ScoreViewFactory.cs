@@ -1,19 +1,32 @@
 public interface IScoreViewFactory
 {
-    IScoreView GetScoreView();
+    IScoreView GetCurrentScoreView();
+    
+    IScoreView GetTotalScoreView();
 }
 
 public class ScoreViewFactory : IScoreViewFactory
 {
-    private static IScoreView scoreView;
+    private static IScoreView totalScore;
+    private static IScoreView currentScore;
 
-    public static void NotifyInstantiation(IScoreView scoreView)
+    public static void NotifyCurrentScoreViewInstantiation(IScoreView scoreView)
     {
-        ScoreViewFactory.scoreView = scoreView;
+        ScoreViewFactory.currentScore = scoreView;
     }
 
-    public IScoreView GetScoreView()
+    public static void NotifyTotalScoreViewInstantiation(IScoreView scoreView)
     {
-        return scoreView;
+        ScoreViewFactory.totalScore = scoreView;
+    }
+
+    public IScoreView GetTotalScoreView()
+    {
+        return totalScore;
+    }
+
+    public IScoreView GetCurrentScoreView()
+    {
+        return currentScore;
     }
 }

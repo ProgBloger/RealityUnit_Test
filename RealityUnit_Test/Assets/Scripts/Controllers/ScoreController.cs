@@ -11,21 +11,28 @@ public interface IScoreController
 public class ScoreController : IScoreController
 {
     private List<ICellModel> cellModels;
-    private IScoreView scoreView;
+    private IScoreView currentScoreView;
+    private IScoreView totalScoreView;
     private IScoreModel scoreModel;
     private IGridModel gridModel;
 
-    public ScoreController(IGridFactory gridFactory, IScoreView scoreView, IScoreModel scoreModel)
+    public ScoreController(IGridFactory gridFactory, IScoreViewFactory scoreViewFactory, IScoreModel scoreModel)
     {
         this.cellModels = gridFactory.GetCellModels();
         this.gridModel = gridFactory.GetGridModel();
-        this.scoreView = scoreView;
-        this.scoreModel = scoreModel;
+        
+        this.currentScoreView = scoreViewFactory.GetCurrentScoreView();
+        this.totalScoreView = scoreViewFactory.GetTotalScoreView();
 
-        SetScores();
+        this.scoreModel = scoreModel;
+        
+		scoreModel.OnCurrentScoreUpdated += HandleOnCurrentScoreUpdated;
+		scoreModel.OnTotalScoreUpdated += HandleOnTotalScoreUpdated;
+
+        InitScoreSystem();
     }
 
-    public void SetScores()
+    public void SetCellScores()
     {
         var availableScores = scoreModel.PointsArray;
         var scoresList = new List<int>(availableScores);
@@ -42,9 +49,36 @@ public class ScoreController : IScoreController
         }
     }
 
+    private void InitScoreSystem()
+    {
+        SetCellScores();
+        this.scoreModel.TotalScore = 2;
+        this.scoreModel.CurrentScore = 3;
+    }
+
+    private void SyncTotalScore()
+    {
+        totalScoreView.Value = this.scoreModel.TotalScore;
+    }
+
+    private void SyncCurrentScore()
+    {
+        currentScoreView.Value = this.scoreModel.CurrentScore;
+    }
+    
+    private void HandleOnTotalScoreUpdated(object sender, TotalScoreUpdatedEventArgs OnClicked)
+    {
+        SyncTotalScore();
+    }
+    
+    private void HandleOnCurrentScoreUpdated(object sender, CurrentScoreUpdatedEventArgs OnClicked)
+    {
+        SyncCurrentScore();
+    }
+
     private List<int> Shuffle(List<int> availableScores)
     {
-        Random rnd=new Random();
+        System.Random rnd = new System.Random();
         return availableScores.OrderBy(x => rnd.Next()).ToList();  
     }
 }

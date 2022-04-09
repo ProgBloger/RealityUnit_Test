@@ -1,18 +1,21 @@
 public interface IScoreControllerFactory
 {
-    ScoreController GetScoreController(IScoreView scoreView, IScoreModel scoreModel);
+    ScoreController GetScoreController(IScoreModel scoreModel);
 }
 
 public class ScoreControllerFactory : IScoreControllerFactory
 {
     IGridFactory gridFactory;
-    public ScoreControllerFactory(IGridFactory gridFactory)
+    IScoreViewFactory scoreViewFactory;
+    public ScoreControllerFactory(IGridFactory gridFactory, IScoreViewFactory scoreViewFactory)
     {
         this.gridFactory = gridFactory;
+        this.scoreViewFactory = scoreViewFactory;
+        
     }
 
-    public ScoreController GetScoreController(IScoreView scoreView, IScoreModel scoreModel)
+    public ScoreController GetScoreController(IScoreModel scoreModel)
     {
-        return new ScoreController(gridFactory, scoreView, scoreModel);
+        return new ScoreController(gridFactory, scoreViewFactory, scoreModel);
     }
 }

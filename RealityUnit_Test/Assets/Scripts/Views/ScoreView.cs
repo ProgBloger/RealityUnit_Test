@@ -7,21 +7,17 @@ public interface IScoreView
     int Value { set; }
 }
 
-public class ScoreView : MonoBehaviour, IScoreView
+public abstract class ScoreView : MonoBehaviour, IScoreView
 {
+    protected string labelTextPattern = string.Empty;
     public int Value 
     {
         set
         {
-            string score = value.ToString();
+            string score = $"{labelTextPattern}{value}";
             
-            TextMeshPro label = gameObject.GetComponent<TextMeshPro>();
-            label.text = score;
+            TMP_Text label = GetComponent<TMP_Text>();
+            label.SetText(score);
         }
-    }
-
-    void Awake()
-    {
-        ScoreViewFactory.NotifyInstantiation(this);
     }
 }

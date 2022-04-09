@@ -28,10 +28,9 @@ public class MainScript : MonoBehaviour
         IScoreModel scoreModel = scoreModelFactory.GetScoreModel();
 
         IScoreViewFactory scoreViewFactory = new ScoreViewFactory();
-        IScoreView scoreView = scoreViewFactory.GetScoreView();
         // ScoreController holds total score and win/loose logic
-        IScoreControllerFactory scoreControllerFactory = new ScoreControllerFactory(gridFactory);
-        IScoreController scoreController = scoreControllerFactory.GetScoreController(scoreView, scoreModel);
+        IScoreControllerFactory scoreControllerFactory = new ScoreControllerFactory(gridFactory, scoreViewFactory);
+        IScoreController scoreController = scoreControllerFactory.GetScoreController(scoreModel);
           
     }
 }

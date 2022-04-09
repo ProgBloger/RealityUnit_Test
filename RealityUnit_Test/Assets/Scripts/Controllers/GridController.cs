@@ -25,16 +25,10 @@ public class GridController : IGridController
         x = i / gridModel.Dimension;
         y = i % gridModel.Dimension;
 
-        Debug.Log($"X grid Coord (i / d): {x}");
-        Debug.Log($"Y grid Coord (i / d): {y}");
-
         // Get global position by multiplying 
         // grid position by shift distance
         x *= gridModel.ShiftDistance;
         y *= gridModel.ShiftDistance;
-
-        Debug.Log($"X by ShiftDistance: {x}");
-        Debug.Log($"Y by ShiftDistance: {y}");
 
         return new Vector3(x, gridModel.DefaultY, y);
     }

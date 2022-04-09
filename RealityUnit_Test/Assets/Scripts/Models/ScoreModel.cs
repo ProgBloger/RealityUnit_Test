@@ -1,7 +1,12 @@
 using System;
 using System.Linq;
+using UnityEngine;
 
 public class TotalScoreUpdatedEventArgs : EventArgs
+{
+    
+}
+public class CurrentScoreUpdatedEventArgs : EventArgs
 {
     
 }
@@ -9,7 +14,9 @@ public class TotalScoreUpdatedEventArgs : EventArgs
 public interface IScoreModel
 {
     event EventHandler<TotalScoreUpdatedEventArgs> OnTotalScoreUpdated;
+    event EventHandler<CurrentScoreUpdatedEventArgs> OnCurrentScoreUpdated;
     int TotalScore { get; set; }
+    int CurrentScore { get; set; }
     int ScoreThreshold { get; }
     int [] PointsArray { get; }
 }
@@ -18,7 +25,9 @@ public class ScoreModel : IScoreModel
 {
     private int [] _pointsArray = new int[] {1,2,3,4,5,6,7,8,9,10,11};
     private int _totalScore { get; set; }
+    private int _currentScore { get; set; }
     public event EventHandler<TotalScoreUpdatedEventArgs> OnTotalScoreUpdated  = (sender, e) => {};
+    public event EventHandler<CurrentScoreUpdatedEventArgs> OnCurrentScoreUpdated  = (sender, e) => {};
     public int TotalScore 
     { 
         get {return _totalScore;} 
@@ -31,6 +40,22 @@ public class ScoreModel : IScoreModel
 				var eventArgs = new TotalScoreUpdatedEventArgs();
 
 				OnTotalScoreUpdated(this, eventArgs);
+			}
+        }
+    }
+
+    public int CurrentScore 
+    { 
+        get {return _currentScore;} 
+        set 
+        {
+            if (_currentScore != value)
+            {
+				_currentScore = value;
+ 
+				var eventArgs = new CurrentScoreUpdatedEventArgs();
+
+				OnCurrentScoreUpdated(this, eventArgs);
 			}
         }
     }
