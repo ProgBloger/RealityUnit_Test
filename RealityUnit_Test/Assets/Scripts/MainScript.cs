@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class MainScript : MonoBehaviour
 {
-    void OnEnable()
+    void Start()
     {
+        
         // TODO: Use DI for registration and resolving hierarchy
 
         ICellViewFactory viewFactory = new CellViewFactory();

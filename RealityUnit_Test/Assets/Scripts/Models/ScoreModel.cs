@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-using UnityEngine;
 
 public class TotalScoreUpdatedEventArgs : EventArgs
 {
@@ -24,8 +23,8 @@ public interface IScoreModel
 public class ScoreModel : IScoreModel
 {
     private int [] _pointsArray = new int[] {1,2,3,4,5,6,7,8,9,10,11};
-    private int _totalScore { get; set; }
-    private int _currentScore { get; set; }
+    private int _totalScore;
+    private int _currentScore;
     public event EventHandler<TotalScoreUpdatedEventArgs> OnTotalScoreUpdated  = (sender, e) => {};
     public event EventHandler<CurrentScoreUpdatedEventArgs> OnCurrentScoreUpdated  = (sender, e) => {};
     public int TotalScore 

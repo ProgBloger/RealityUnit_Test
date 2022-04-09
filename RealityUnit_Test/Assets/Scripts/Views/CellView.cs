@@ -11,6 +11,7 @@ public interface ICellView
     event EventHandler<CellClickEventArgs> OnClicked;
     int Value { set; }
 
+    bool IsActive { set; } 
     void SetPosition(Vector3 position);
 }
 
@@ -30,10 +31,29 @@ public class CellView : MonoBehaviour, ICellView
         }
     }
 
+    public bool IsActive 
+    {
+        set
+        {
+            if(value)
+            {
+                var cubeRenderer = GetComponent<Renderer>();
+
+                cubeRenderer.material.SetColor("_Color", Color.red);
+            }
+            else
+            {
+                var cubeRenderer = GetComponent<Renderer>();
+
+                cubeRenderer.material.SetColor("_Color", Color.green);
+            }
+        }
+    }
+
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetMouseButton(0))
+        if(Input.GetMouseButtonDown(0))
         {
             var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;

@@ -2,34 +2,45 @@ using System;
 
 public class CellStateChangedEventArgs : EventArgs
 {
+    public bool IsActive { get; set; }
+    public int Value { get; set; }
+}
+public class CellValueChangedEventArgs : EventArgs
+{
     
 }
 
 public interface ICellModel
 {
     event EventHandler<CellStateChangedEventArgs> OnCellStateChanged;
-    bool Highlighted { get; set; }
+    event EventHandler<CellValueChangedEventArgs> OnCellValueChanged;
+    bool IsActive { get; set; }
     int Value { get; set; }
 }
 
 public class CellModel : ICellModel
 {
-    private bool _highlighted { get; set; }
+    private bool _isActive { get; set; }
     private int _value { get; set; }
 
     public event EventHandler<CellStateChangedEventArgs> OnCellStateChanged  = (sender, e) => {};
+    public event EventHandler<CellValueChangedEventArgs> OnCellValueChanged  = (sender, e) => {};
 
-    public bool Highlighted 
+    public bool IsActive 
     { 
-        get {return _highlighted;} 
+        get {return _isActive;} 
         set 
         {
-            if (_highlighted != value)
+            if (_isActive != value)
             {
-				_highlighted = value;
+				_isActive = value;
  
-				var eventArgs = new CellStateChangedEventArgs();
-
+				var eventArgs = new CellStateChangedEventArgs 
+                {
+                    IsActive = value,
+                    Value = this.Value,
+                };
+                
 				OnCellStateChanged(this, eventArgs);
 			}
         } 
@@ -44,9 +55,9 @@ public class CellModel : ICellModel
             {
 				_value = value;
  
-				var eventArgs = new CellStateChangedEventArgs();
+				var eventArgs = new CellValueChangedEventArgs();
                 
-				OnCellStateChanged(this, eventArgs);
+				OnCellValueChanged(this, eventArgs);
 			}
         } 
     }

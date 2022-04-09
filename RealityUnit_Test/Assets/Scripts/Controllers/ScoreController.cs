@@ -1,5 +1,5 @@
 
-using System;
+using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -23,11 +23,12 @@ public class ScoreController : IScoreController
         
         this.currentScoreView = scoreViewFactory.GetCurrentScoreView();
         this.totalScoreView = scoreViewFactory.GetTotalScoreView();
-
         this.scoreModel = scoreModel;
         
 		scoreModel.OnCurrentScoreUpdated += HandleOnCurrentScoreUpdated;
 		scoreModel.OnTotalScoreUpdated += HandleOnTotalScoreUpdated;
+
+        SubscribeOnCellStateChanged();
 
         InitScoreSystem();
     }
@@ -46,14 +47,23 @@ public class ScoreController : IScoreController
         for(int i = 0; i < gridModel.CellsTotal; i++)
         {
             cellModels[i].Value = scoresList[i];
+            
+        }
+    }
+
+    private void SubscribeOnCellStateChanged()
+    {
+        foreach(var cellModel in cellModels)
+        {
+            cellModel.OnCellStateChanged += HandleOnCellStateChanged;
         }
     }
 
     private void InitScoreSystem()
     {
         SetCellScores();
-        this.scoreModel.TotalScore = 2;
-        this.scoreModel.CurrentScore = 3;
+        this.scoreModel.TotalScore = this.scoreModel.TotalScore;
+        this.scoreModel.CurrentScore = this.scoreModel.CurrentScore;
     }
 
     private void SyncTotalScore()
@@ -66,14 +76,27 @@ public class ScoreController : IScoreController
         currentScoreView.Value = this.scoreModel.CurrentScore;
     }
     
-    private void HandleOnTotalScoreUpdated(object sender, TotalScoreUpdatedEventArgs OnClicked)
+    private void HandleOnTotalScoreUpdated(object sender, TotalScoreUpdatedEventArgs args)
     {
         SyncTotalScore();
     }
     
-    private void HandleOnCurrentScoreUpdated(object sender, CurrentScoreUpdatedEventArgs OnClicked)
+    private void HandleOnCurrentScoreUpdated(object sender, CurrentScoreUpdatedEventArgs args)
     {
         SyncCurrentScore();
+    }
+    
+    private void HandleOnCellStateChanged(object sender, CellStateChangedEventArgs args)
+    {
+        Debug.Log($"Noticed Cell State Changed {args.IsActive}");
+        if(args.IsActive)
+        {
+            scoreModel.CurrentScore += args.Value;
+        }
+        else
+        {
+            scoreModel.CurrentScore -= args.Value;
+        }
     }
 
     private List<int> Shuffle(List<int> availableScores)
