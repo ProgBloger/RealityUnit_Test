@@ -14,9 +14,10 @@ public class ScoreController : IScoreController
     private IScoreView currentScoreView;
     private IScoreView totalScoreView;
     private IScoreModel scoreModel;
+    private ISceneManagerModel sceneManagerModel;
     private IGridModel gridModel;
 
-    public ScoreController(IGridFactory gridFactory, IScoreViewFactory scoreViewFactory, IScoreModel scoreModel)
+    public ScoreController(IGridFactory gridFactory, IScoreViewFactory scoreViewFactory, IScoreModel scoreModel, ISceneManagerModel sceneManagerModel)
     {
         this.cellModels = gridFactory.GetCellModels();
         this.gridModel = gridFactory.GetGridModel();
@@ -24,6 +25,7 @@ public class ScoreController : IScoreController
         this.currentScoreView = scoreViewFactory.GetCurrentScoreView();
         this.totalScoreView = scoreViewFactory.GetTotalScoreView();
         this.scoreModel = scoreModel;
+        this.sceneManagerModel = sceneManagerModel;
         
 		scoreModel.OnCurrentScoreUpdated += HandleOnCurrentScoreUpdated;
 		scoreModel.OnTotalScoreUpdated += HandleOnTotalScoreUpdated;
@@ -47,7 +49,6 @@ public class ScoreController : IScoreController
         for(int i = 0; i < gridModel.CellsTotal; i++)
         {
             cellModels[i].Value = scoresList[i];
-            
         }
     }
 
@@ -56,6 +57,47 @@ public class ScoreController : IScoreController
         foreach(var cellModel in cellModels)
         {
             cellModel.OnCellStateChanged += HandleOnCellStateChanged;
+        }
+    }
+    
+    private void HandleOnTotalScoreUpdated(object sender, TotalScoreUpdatedEventArgs args)
+    {
+        SyncTotalScore();
+        DecideWholeSetsResult();
+    }
+    
+    private void HandleOnCurrentScoreUpdated(object sender, CurrentScoreUpdatedEventArgs args)
+    {
+        SyncCurrentScore();
+        
+        // When CurrentScore update event occures
+        // Checks if it crosses the threshold
+        DecideGameResult();
+    }
+    
+    private void HandleOnCellStateChanged(object sender, CellStateChangedEventArgs args)
+    {
+        if(args.IsActive)
+        {
+            scoreModel.CurrentScore += args.Value;
+        }
+        else
+        {
+            scoreModel.CurrentScore -= args.Value;
+        }
+    }
+
+    private void DecideWholeSetsResult()
+    {
+        if(scoreModel.TotalScore >= scoreModel.GameThreshold)
+        {
+            // Win case
+            sceneManagerModel.CurrentScene = (int)GameScene.Win;
+        }
+        else if(scoreModel.TotalScore < 0)
+        {
+            // Lose case
+            sceneManagerModel.CurrentScene = (int)GameScene.Loose;
         }
     }
 
@@ -75,27 +117,20 @@ public class ScoreController : IScoreController
     {
         currentScoreView.Value = this.scoreModel.CurrentScore;
     }
-    
-    private void HandleOnTotalScoreUpdated(object sender, TotalScoreUpdatedEventArgs args)
+
+    private void DecideGameResult()
     {
-        SyncTotalScore();
-    }
-    
-    private void HandleOnCurrentScoreUpdated(object sender, CurrentScoreUpdatedEventArgs args)
-    {
-        SyncCurrentScore();
-    }
-    
-    private void HandleOnCellStateChanged(object sender, CellStateChangedEventArgs args)
-    {
-        Debug.Log($"Noticed Cell State Changed {args.IsActive}");
-        if(args.IsActive)
+        if(scoreModel.CurrentScore > scoreModel.ScoreThreshold)
         {
-            scoreModel.CurrentScore += args.Value;
+            // Loose case
+            scoreModel.TotalScore -= scoreModel.CurrentScore / 2;
+            ResetTheGame();
         }
-        else
+        else if(scoreModel.CurrentScore == scoreModel.ScoreThreshold)
         {
-            scoreModel.CurrentScore -= args.Value;
+            // Win case
+            scoreModel.TotalScore += scoreModel.CurrentScore;
+            ResetTheGame();
         }
     }
 
@@ -103,5 +138,16 @@ public class ScoreController : IScoreController
     {
         System.Random rnd = new System.Random();
         return availableScores.OrderBy(x => rnd.Next()).ToList();  
+    }
+
+    private void ResetTheGame()
+    {
+        foreach(var cellModel in cellModels)
+        {
+            cellModel.IsActive = false;
+        }
+
+        SetCellScores();
+        scoreModel.CurrentScore = 0;
     }
 }

@@ -6,7 +6,7 @@ public class MainScript : MonoBehaviour
 {
     void Start()
     {
-        
+
         // TODO: Use DI for registration and resolving hierarchy
 
         ICellViewFactory viewFactory = new CellViewFactory();
@@ -28,10 +28,20 @@ public class MainScript : MonoBehaviour
         IScoreModelFactory scoreModelFactory = new ScoreModelFactory();
         IScoreModel scoreModel = scoreModelFactory.GetScoreModel();
 
+        ISceneManagerModelFactory sceneManagerModelFactory = new SceneManagerModelFactory();
+        ISceneManagerModel sceneManagerModel = sceneManagerModelFactory.GetSceneManagerModel();
+
         IScoreViewFactory scoreViewFactory = new ScoreViewFactory();
         // ScoreController holds total score and win/loose logic
         IScoreControllerFactory scoreControllerFactory = new ScoreControllerFactory(gridFactory, scoreViewFactory);
-        IScoreController scoreController = scoreControllerFactory.GetScoreController(scoreModel);
-          
+        IScoreController scoreController = scoreControllerFactory.GetScoreController(scoreModel, sceneManagerModel);
+
+        
+
+        ISceneManagerViewFactory sceneManagerViewFactory = new SceneManagerViewFactory();
+        ISceneManagerView sceneManagerView = sceneManagerViewFactory.GetSceneManagerView();
+
+        ISceneManagerControllerFactory sceneManagerControllerFactory = new SceneManagerControllerFactory();
+        ISceneManagerController sceneManagerController = sceneManagerControllerFactory.GetSceneManagerController(sceneManagerView, sceneManagerModel);
     }
 }

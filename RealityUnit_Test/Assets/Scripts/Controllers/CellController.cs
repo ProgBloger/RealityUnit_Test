@@ -54,6 +54,5 @@ public class CellController : ICellController
     private void SyncDisplayNumber()
     {
         cellView.Value = model.Value;
-        Debug.Log($"cellView.Value changed {model.Value}");
     }
 }

@@ -5,6 +5,7 @@ public class TotalScoreUpdatedEventArgs : EventArgs
 {
     
 }
+
 public class CurrentScoreUpdatedEventArgs : EventArgs
 {
     
@@ -17,6 +18,7 @@ public interface IScoreModel
     int TotalScore { get; set; }
     int CurrentScore { get; set; }
     int ScoreThreshold { get; }
+    int GameThreshold { get; }
     int [] PointsArray { get; }
 }
 
@@ -60,5 +62,6 @@ public class ScoreModel : IScoreModel
     }
 
     public int ScoreThreshold { get {return 21;} }
+    public int GameThreshold { get {return 60;} }
     public int [] PointsArray {get {return _pointsArray.Select(p => p).ToArray();}}
 }
