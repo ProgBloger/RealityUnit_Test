@@ -1,3 +1,5 @@
+using UnityEngine;
+
 public interface ISceneManagerController
 {
     
@@ -22,6 +24,7 @@ public class SceneManagerController : ISceneManagerController
 
     private void ChangeScene()
     {
+        Debug.Log("ChangeScene");
         view.CurrentScene = model.CurrentScene;
     }
 }

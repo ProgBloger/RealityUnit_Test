@@ -1,12 +1,12 @@
 public interface ISceneManagerModelFactory
 {
-    ISceneManagerModel GetSceneManagerModel();
+    ISceneManagerModel GetSceneManagerModel(GameScene scene);
 }
 
 public class SceneManagerModelFactory : ISceneManagerModelFactory
 {
-    public ISceneManagerModel GetSceneManagerModel()
+    public ISceneManagerModel GetSceneManagerModel(GameScene scene)
     {
-        return new SceneManagerModel();
+        return new SceneManagerModel(scene);
     }
 }

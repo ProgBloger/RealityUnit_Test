@@ -1,5 +1,4 @@
 
-using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -97,7 +96,7 @@ public class ScoreController : IScoreController
         else if(scoreModel.TotalScore < 0)
         {
             // Lose case
-            sceneManagerModel.CurrentScene = (int)GameScene.Loose;
+            sceneManagerModel.CurrentScene = (int)GameScene.Lose;
         }
     }
 

@@ -29,14 +29,12 @@ public class MainScript : MonoBehaviour
         IScoreModel scoreModel = scoreModelFactory.GetScoreModel();
 
         ISceneManagerModelFactory sceneManagerModelFactory = new SceneManagerModelFactory();
-        ISceneManagerModel sceneManagerModel = sceneManagerModelFactory.GetSceneManagerModel();
+        ISceneManagerModel sceneManagerModel = sceneManagerModelFactory.GetSceneManagerModel(GameScene.Game);
 
         IScoreViewFactory scoreViewFactory = new ScoreViewFactory();
         // ScoreController holds total score and win/loose logic
         IScoreControllerFactory scoreControllerFactory = new ScoreControllerFactory(gridFactory, scoreViewFactory);
         IScoreController scoreController = scoreControllerFactory.GetScoreController(scoreModel, sceneManagerModel);
-
-        
 
         ISceneManagerViewFactory sceneManagerViewFactory = new SceneManagerViewFactory();
         ISceneManagerView sceneManagerView = sceneManagerViewFactory.GetSceneManagerView();
