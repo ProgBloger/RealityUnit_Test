@@ -4,9 +4,12 @@ using UnityEngine;
 
 public class MainScript : MonoBehaviour
 {
+    private const int screenWidth = 1080;
+    private const int screenHeight = 1920;
     void Start()
     {
-
+        Screen.SetResolution(screenWidth, screenHeight, true);
+        
         // TODO: Use DI for registration and resolving hierarchy
 
         ICellViewFactory viewFactory = new CellViewFactory();

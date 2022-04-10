@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class CellClickEventArgs : EventArgs
@@ -56,13 +57,33 @@ public class CellView : MonoBehaviour, ICellView
         if(Input.GetMouseButtonDown(0))
         {
             var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
-            if(Physics.Raycast(ray, out hit) && hit.transform == transform)
+            RaycastHit mouseHit;
+            if(Physics.Raycast(ray, out mouseHit) && mouseHit.transform == transform)
             {
                 var eventArgs = new CellClickEventArgs();
                 OnClicked(this, eventArgs);
             }
         }
+
+        var touches = new List<Ray>();
+        if(Input.touchCount > 0)
+         {
+             foreach(Touch t in Input.touches)
+             {
+                 touches[t.fingerId] = Camera.main.ScreenPointToRay(Input.GetTouch(t.fingerId).position);
+
+                 if(Input.GetTouch(t.fingerId).phase == TouchPhase.Began)
+                 {
+                    RaycastHit touchHit;
+                    if(Physics.Raycast(touches[t.fingerId], out touchHit) && touchHit.transform == transform)
+                    {
+                        var eventArgs = new CellClickEventArgs();
+                        OnClicked(this, eventArgs);
+                    }
+                 }
+                     
+             }
+         }
     }
 
     public void SetPosition(Vector3 position)
